@@ -1,65 +1,67 @@
+# Programa de Juliana García Rosset
+  # Versión 2: Se corrigieron los errores y se mejoró el programa :)
+  # Nota: No se utilizan matrices sino listas de listas
+
+
 from random import randrange
 from turtle import Screen, Turtle
 from time import sleep
 
-cerrado = 0
-bandera = 1
-abierto = 2
 
-bomba = -1
-
-bomba_abierta = False
-
-def crea_matriz(w, l): #Crea matriz de ceros
+# Crea matriz de ceros
+def crea_matriz(w, l):
   matriz = []
   for i in range(w):
     matriz.append([0]*l)
   return matriz
 
-#Pone bombas(-1) y sus respectivos numeros(1 to 8)
-#Casillas vacias == 0
-def rellena_matriz(matriz, w, l): 
+
+def pone_bombas():
   bombas = cant_bombas
   for i in range(bombas):
-    [a, b] = [randrange(w), randrange(l)]
-    while matriz[a][b] == bomba:
-      [a, b] = [randrange(w), randrange(l)]
-    matriz[a][b] = bomba
-  
+    a, b = randrange(w), randrange(l)
+    while bomb_num[a][b] == bomba:
+      a, b = randrange(w), randrange(l)
+    bomb_num[a][b] = bomba
+
+
+def pone_numeros():	# Los números del 0 al 8 indican la cantidad de bombas cercanas
   for i in range(w):
     for j in range(l):
-      if matriz[i][j] == bomba:
+      if bomb_num[i][j] == bomba:
         if i-1 in range(w) and j-1 in range(l):
-          if matriz[i-1][j-1] != bomba:
-            matriz[i-1][j-1] += 1
+          if bomb_num[i-1][j-1] != bomba:
+            bomb_num[i-1][j-1] += 1
         if i-1 in range(w):
-          if matriz[i-1][j] != bomba:
-            matriz[i-1][j] += 1
+          if bomb_num[i-1][j] != bomba:
+            bomb_num[i-1][j] += 1
         if i-1 in range(w) and j+1 in range(l):
-          if matriz[i-1][j+1] != bomba:
-            matriz[i-1][j+1] += 1
+          if bomb_num[i-1][j+1] != bomba:
+            bomb_num[i-1][j+1] += 1
         if j-1 in range(l):
-          if matriz[i][j-1] != bomba:
-            matriz[i][j-1] += 1
+          if bomb_num[i][j-1] != bomba:
+            bomb_num[i][j-1] += 1
         if j+1 in range(l):
-          if matriz[i][j+1] != bomba:
-            matriz[i][j+1] += 1
+          if bomb_num[i][j+1] != bomba:
+            bomb_num[i][j+1] += 1
         if i+1 in range(w) and j-1 in range(l):
-          if matriz[i+1][j-1] != bomba:
-            matriz[i+1][j-1] += 1
+          if bomb_num[i+1][j-1] != bomba:
+            bomb_num[i+1][j-1] += 1
         if i+1 in range(w):
-          if matriz[i+1][j] != bomba:
-            matriz[i+1][j] += 1
+          if bomb_num[i+1][j] != bomba:
+            bomb_num[i+1][j] += 1
         if i+1 in range(w) and j+1 in range(l):
-          if matriz[i+1][j+1] != bomba:
-            matriz[i+1][j+1] += 1
+          if bomb_num[i+1][j+1] != bomba:
+            bomb_num[i+1][j+1] += 1
 
-def dibuja_tablero(tablero, bomb_num, w, l):
+
+def dibuja_tablero():
+  t.penup()
   for i in range(w):
     for j in range(l):
-      dibuja_casilla(tablero, bomb_num, i, j)
+      dibuja_casilla(i, j)
 
-def dibuja_casilla(tablero, bomb_num, i, j):
+def dibuja_casilla(i, j):
   global t, bomba_abierta
   t.goto(j+.5, i)
   t.begin_fill()
@@ -94,44 +96,55 @@ def abrir_vacias (tablero, bomb_num, i, j):
   if i-1 in range(w) and j-1 in range(l):
     if tablero[i-1][j-1] == cerrado:
       tablero[i-1][j-1] = abierto
-      dibuja_casilla(tablero, bomb_num, i-1, j-1)
+      dibuja_casilla(i-1, j-1)
   if i-1 in range(w):
     if tablero[i-1][j] == cerrado:
       tablero[i-1][j] = abierto
-      dibuja_casilla(tablero, bomb_num, i-1, j)
+      dibuja_casilla(i-1, j)
   if i-1 in range(w) and j+1 in range(l):
     if tablero[i-1][j+1] == cerrado:
       tablero[i-1][j+1] = abierto
-      dibuja_casilla(tablero, bomb_num, i-1, j+1)
+      dibuja_casilla(i-1, j+1)
   if j-1 in range(l):
     if tablero[i][j-1] == cerrado:
       tablero[i][j-1] = abierto
-      dibuja_casilla(tablero, bomb_num, i, j-1)
+      dibuja_casilla(i, j-1)
   if j+1 in range(l):
     if tablero[i][j+1] == cerrado:
       tablero[i][j+1] = abierto
-      dibuja_casilla(tablero, bomb_num, i, j+1)
+      dibuja_casilla(i, j+1)
   if i+1 in range(w) and j-1 in range(l):
     if tablero[i+1][j-1] == cerrado:
       tablero[i+1][j-1] = abierto
-      dibuja_casilla(tablero, bomb_num, i+1, j-1)
+      dibuja_casilla(i+1, j-1)
   if i+1 in range(w):
     if tablero[i+1][j] == cerrado:
       tablero[i+1][j] = abierto
-      dibuja_casilla(tablero, bomb_num, i+1, j)
+      dibuja_casilla(i+1, j)
   if i+1 in range(w) and j+1 in range(l):
     if tablero[i+1][j+1] == cerrado:
       tablero[i+1][j+1] = abierto
-      dibuja_casilla(tablero, bomb_num, i+1, j+1)
+      dibuja_casilla(i+1, j+1)
 
 def clicL (x, y):
-  global pantalla, tablero, bomb_num, w, l, bomba_abierta
+  global p, bomba_abierta
   [j, i] = [int(x), int(y)]
   if 0 <= i < len(tablero) and 0 <= j < len(tablero[0]):
+  
     if tablero[i][j] == cerrado:
       tablero[i][j] = abierto
-      dibuja_casilla(tablero, bomb_num, i, j)
-    elif tablero[i][j] == abierto:                                 #Se fija si se pueden abrir casillas
+      dibuja_casilla(i, j)
+      if bomba_abierta:		#Perdiste o ganaste?
+        sleep(2)
+        t.clear()
+        t.goto(w/2, l/2)
+        t.color('black')
+        t.write('Game over :(')
+        sleep(2)
+        p.bye()
+      else: win()
+      
+    elif tablero[i][j] == abierto:			#Se fija si se pueden abrir casillas
       if bomb_num[i][j] > 0:
         contador = 0
         if i-1 in range(w) and j-1 in range(l):
@@ -159,78 +172,42 @@ def clicL (x, y):
           if tablero[i+1][j+1] == bandera:
             contador += 1
             
-        if bomb_num[i][j] == contador:                          #Abre 8 casillas y las dibuja
+        if bomb_num[i][j] == contador:			#Abre 8 casillas y las dibuja
           if i-1 in range(w) and j-1 in range(l):
             if tablero[i-1][j-1] == cerrado:
               tablero[i-1][j-1] = abierto
-              dibuja_casilla(tablero, bomb_num, i-1, j-1)
+              dibuja_casilla(i-1, j-1)
           if i-1 in range(w):
             if tablero[i-1][j] == cerrado:
               tablero[i-1][j] = abierto
-              dibuja_casilla(tablero, bomb_num, i-1, j)
+              dibuja_casilla(i-1, j)
           if i-1 in range(w) and j+1 in range(l):
             if tablero[i-1][j+1] == cerrado:
               tablero[i-1][j+1] = abierto
-              dibuja_casilla(tablero, bomb_num, i-1, j+1)
+              dibuja_casilla(i-1, j+1)
           if j-1 in range(l):
             if tablero[i][j-1] == cerrado:
               tablero[i][j-1] = abierto
-              dibuja_casilla(tablero, bomb_num, i, j-1)
+              dibuja_casilla(i, j-1)
           if j+1 in range(l):
             if tablero[i][j+1] == cerrado:
               tablero[i][j+1] = abierto
-              dibuja_casilla(tablero, bomb_num, i, j+1)
+              dibuja_casilla(i, j+1)
           if i+1 in range(w) and j-1 in range(l):
             if tablero[i+1][j-1] == cerrado:
               tablero[i+1][j-1] = abierto
-              dibuja_casilla(tablero, bomb_num, i+1, j-1)
+              dibuja_casilla(i+1, j-1)
           if i+1 in range(w):
             if tablero[i+1][j] == cerrado:
               tablero[i+1][j] = abierto
-              dibuja_casilla(tablero, bomb_num, i+1, j)
+              dibuja_casilla(i+1, j)
           if i+1 in range(w) and j+1 in range(l):
             if tablero[i+1][j+1] == cerrado:
               tablero[i+1][j+1] = abierto
-              dibuja_casilla(tablero, bomb_num, i+1, j+1)
+              dibuja_casilla(i+1, j+1)
               
-  if bomba_abierta:
-    sleep(2)
-    t.clear()
-    t.goto(w/2, l/2)
-    t.color('black')
-    t.write('Game over :(')
-    sleep(2)
-    pantalla.bye()
-  elif win():
-    t.clear()
-    t.goto(w/2, l/2)
-    t.color('black')
-    t.write("Ganaste!!!! Vamo' loco!!!")
-    print('\a')
-    sleep(0.3)
-    print('\a')
-    sleep(0.2)
-    print('\a')
-    sleep(0.1)
-    print('\a')
-    sleep(0.05)
-    print('\a')
-    sleep(0.05)
-    print('\a')
-    sleep(0.05)
-    print('\a')
-    sleep(2)
-    pantalla.bye()
-  
-def win():
-  global w, l
-  ganaste = True
-  for i in range(w):
-    for j in range(l):
-      if tablero[i][j] == cerrado:
-        ganaste = False
-        return ganaste
-  return ganaste
+      win()	#Ganaste?
+      
 
 def clicR (x, y):
   global tablero, bomb_num
@@ -238,33 +215,57 @@ def clicR (x, y):
   if 0 <= i < len(tablero) and 0 <= j < len(tablero[0]):
     if tablero[i][j] == cerrado:
       tablero[i][j] = bandera
-      dibuja_casilla(tablero, bomb_num, i, j)
+      dibuja_casilla(i, j)
+      win()	#Ganaste?
     elif tablero[i][j] == bandera:
       tablero[i][j] = cerrado
-      dibuja_casilla(tablero, bomb_num, i, j)
+      dibuja_casilla(i, j)
 
-#Programa principal
-l = int(input('largo: '))
-w = int(input('ancho: '))
+
+def win():
+  for i in range(w):
+    for j in range(l):
+      if tablero[i][j] == cerrado:
+        return False
+  t.clear()
+  t.goto(w/2, l/2)
+  t.color('black')
+  t.write("¡¡Ganaste!!")
+  sleep(2)
+  p.bye()
+
+
+#-----PROGRAMA PRINCIPAL----------
+
+#VARIABLES
+cerrado, bandera, abierto  =  0, 1, 2	# tablero: Estados de las casillas
+bomba = -1				# bomb_num
+bomba_abierta = False			# Para verificar si perdiste
+
+l = int(input('Largo: '))
+w = int(input('Ancho: '))
 cant_bombas = int(input('cantidad de bombas: '))
 
-pantalla = Screen()
-pantalla.setup(l*50, w*50)
-pantalla.screensize(l*50, w*50)
-pantalla.setworldcoordinates(-.5, -.5, l+.5, w+.5)
-pantalla.delay(0)
+
+# Se inicializa la tortuga
+p = Screen()
+p.setup(l*50, w*50)
+p.screensize(l*50, w*50)
+p.setworldcoordinates(-.5, -.5, l+.5, w+.5)
+p.delay(0)
 t = Turtle()
 t.hideturtle()
+
 
 bomb_num = crea_matriz(w, l)
 tablero = crea_matriz(w, l)
 
-rellena_matriz(bomb_num, w, l)
-t.penup()
-dibuja_tablero(tablero, bomb_num, w, l)
+pone_bombas()
+pone_numeros()
+dibuja_tablero()
 
-pantalla.onclick(clicL, btn=1)
-pantalla.onclick(clicR, btn=3)
+p.onclick(clicL, btn=1)
+p.onclick(clicR, btn=3)
 
-pantalla.mainloop()
+p.mainloop()
 
