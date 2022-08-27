@@ -1,2 +1,1 @@
-# Py
-Proyectos en python
+# Python projects
